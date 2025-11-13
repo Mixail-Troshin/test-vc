@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Кабинет — VC Metrics</title>
+  <link rel="stylesheet" href="/styles.css"/>
+</head>
+<body>
+<header class="topbar">
+  <div class="container topbar__in">
+    <div class="brand"><span class="brand__dot">vc</span> Metrics</div>
+    <nav class="nav">
+      <button id="logout" class="btn ghost">Выйти</button>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <section class="card">
+    <h1>Личный кабинет</h1>
+    <p class="lead">
+      Здесь появится таблица публикаций, цена размещения и расчёт CPM (лента/открытия).
+      Публичная часть уже готова — продолжаем строить инструмент.
+    </p>
+  </section>
+</main>
+
+<script>
+document.querySelector('#logout').onclick = async () => {
+  await fetch('/api/logout', { method:'POST', credentials:'include' });
+  location.assign('/login.html');
+};
+</script>
+</body>
+</html>
