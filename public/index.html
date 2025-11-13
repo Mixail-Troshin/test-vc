@@ -1,71 +1,155 @@
 <!doctype html>
 <html lang="ru">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>VC Metrics — аналитика публикаций</title>
-  <link rel="stylesheet" href="/styles.css"/>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>VC Metrics</title>
+  <link rel="stylesheet" href="/public/styles.css" />
 </head>
 <body>
-<header class="topbar">
-  <div class="container topbar__in">
-    <div class="brand"><span class="brand__dot">vc</span> Metrics</div>
-    <nav class="nav">
-      <a class="btn link" href="/features.html">Возможности</a>
-      <a class="btn link" href="/pricing.html">Тариф</a>
-      <a class="btn primary" href="/login.html">Войти</a>
-    </nav>
-  </div>
-</header>
+  <header class="topbar">
+    <div class="brand">vc</div><div class="product">Metrics</div>
+    <nav class="grow"></nav>
+    <a class="link" href="#features">Возможности</a>
+    <a class="link" href="#pricing">Тариф</a>
+    <button id="openLogin" class="primary">Войти</button>
+  </header>
 
-<main>
-  <!-- hero -->
-  <section class="section" style="position:relative">
-    <div class="hero-bg"></div>
-    <div class="spark"></div>
-    <div class="container">
-      <div class="card glass" style="padding:32px">
+  <!-- PUBLIC LANDING -->
+  <main id="landing">
+    <section class="landing-hero">
+      <!-- анимированный фон -->
+      <div class="bg">
+        <div class="lane slow">
+          <div class="tile"><img src="https://picsum.photos/seed/a/480/300" alt=""><div class="t"><b>Показы</b><span class="meter" data-to="98231">0</span></div></div>
+          <div class="tile"><img src="https://picsum.photos/seed/b/480/300" alt=""><div class="t"><b>Открытия</b><span class="meter" data-to="22187">0</span></div></div>
+          <div class="tile"><img src="https://picsum.photos/seed/c/480/300" alt=""><div class="t"><b>Комментарии</b><span class="meter" data-to="632">0</span></div></div>
+          <div class="tile"><img src="https://picsum.photos/seed/d/480/300" alt=""><div class="t"><b>Показы</b><span class="meter" data-to="76410">0</span></div></div>
+        </div>
+        <div class="lane mid">
+          <div class="tile"><img src="https://picsum.photos/seed/e/480/300" alt=""><div class="t"><b>Открытия</b><span class="meter" data-to="15023">0</span></div></div>
+          <div class="tile"><img src="https://picsum.photos/seed/f/480/300" alt=""><div class="t"><b>Показы</b><span class="meter" data-to="121003">0</span></div></div>
+          <div class="tile"><img src="https://picsum.photos/seed/g/480/300" alt=""><div class="t"><b>Избранное</b><span class="meter" data-to="84">0</span></div></div>
+          <div class="tile"><img src="https://picsum.photos/seed/h/480/300" alt=""><div class="t"><b>Показы</b><span class="meter" data-to="88190">0</span></div></div>
+        </div>
+        <div class="lane fast">
+          <div class="tile"><img src="https://picsum.photos/seed/i/480/300" alt=""><div class="t"><b>Открытия</b><span class="meter" data-to="19442">0</span></div></div>
+          <div class="tile"><img src="https://picsum.photos/seed/j/480/300" alt=""><div class="t"><b>Показы</b><span class="meter" data-to="54021">0</span></div></div>
+          <div class="tile"><img src="https://picsum.photos/seed/k/480/300" alt=""><div class="t"><b>Комментарии</b><span class="meter" data-to="412">0</span></div></div>
+          <div class="tile"><img src="https://picsum.photos/seed/l/480/300" alt=""><div class="t"><b>Показы</b><span class="meter" data-to="73011">0</span></div></div>
+        </div>
+      </div>
+
+      <!-- центральный контент -->
+      <div class="hero">
         <h1>Аналитика публикаций на VC.ru</h1>
         <p class="lead">
-          Считаем <b>показы в ленте</b> и <b>открытия статьи</b>, строим картинку эффективности и
-          показываем <b>CPM</b> по обеим метрикам. Внешний вид — аккуратно в духе VC, но богаче.
+          Считаем <b>показы в ленте</b> и <b>открытия статьи</b>, строим картину эффективности
+          и показываем <b>CPM</b> по обеим метрикам. Внешний вид — аккуратный, в духе VC.
         </p>
+        <div class="cta">
+          <button id="goCabinet" class="primary">Перейти в личный кабинет</button>
+          <a class="ghost" href="#features">Как это работает</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="features" class="features container">
+      <div class="fcard">
+        <div class="ico">📈</div>
+        <h3>CPM: лента и статья</h3>
+        <p>Две независимые метрики + цена размещения для реального CPM.</p>
+      </div>
+      <div class="fcard">
+        <div class="ico">⚡</div>
+        <h3>1 клик — и сбор пошёл</h3>
+        <p>Вставляешь ссылку вида <span class="muted">vc.ru/.../123456</span>, ID берём сами.</p>
+      </div>
+      <div class="fcard">
+        <div class="ico">🕓</div>
+        <h3>Автообновление</h3>
+        <p>Раз в сутки (и вручную когда угодно) без перезагрузок.</p>
+      </div>
+    </section>
+
+    <footer class="container foot">
+      Неофициальный инструмент. UI вдохновлён VC.ru.
+    </footer>
+  </main>
+
+  <!-- LOGIN MODAL -->
+  <div id="login" class="modal hidden">
+    <form id="loginForm" class="card">
+      <h2>Вход</h2>
+      <label>E-mail</label>
+      <input id="email" type="email" placeholder="admin@local" autocomplete="username" />
+      <label>Пароль</label>
+      <input id="password" type="password" placeholder="Пароль" autocomplete="current-password" />
+      <button id="loginBtn" type="submit" class="primary">Войти</button>
+      <div id="loginErr" class="error"></div>
+      <button type="button" class="ghost small" id="closeLogin">Отмена</button>
+    </form>
+  </div>
+
+  <!-- PRIVATE APP (как было) -->
+  <main id="app" class="container hidden">
+    <section class="card tight">
+      <div class="row">
+        <div class="col">
+          <label>Ссылка на публикацию VC.ru</label>
+          <input id="urlInput" type="url" placeholder="https://vc.ru/.../1234567-title" />
+        </div>
+        <div class="col w-min">
+          <label>&nbsp;</label>
+          <button id="addBtn" class="primary">Добавить</button>
+          <span id="addMsg" class="muted"></span>
+        </div>
+      </div>
+    </section>
+
+    <section class="card tabs">
+      <div id="tab-monitor">
+        <div class="row between">
+          <h2>Список статей</h2>
+          <button id="refreshAll" class="ghost">Обновить всё</button>
+        </div>
+
+        <div class="summary">
+          <div><span class="muted">Публикаций</span><strong id="sumPubs">—</strong></div>
+          <div><span class="muted">Всего открытий</span><strong id="sumHits">—</strong></div>
+        </div>
+
+        <div class="tablewrap">
+          <table id="table">
+            <thead>
+              <tr>
+                <th>Дата</th><th>Заголовок</th><th>Открытия</th><th>Показы в ленте</th>
+                <th>CPM (откр.)</th><th>CPM (лента)</th><th>Обновлено</th><th></th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div id="tab-settings" class="hidden">
+        <h2>Настройки</h2>
         <div class="row">
-          <a class="btn primary" href="/login.html">Перейти в личный кабинет</a>
-          <a class="btn" href="/features.html">Как это работает</a>
+          <div class="col">
+            <label>Стоимость размещения, ₽</label>
+            <input id="price" type="number" min="0" step="1" placeholder="15000" />
+          </div>
+          <div class="col w-min">
+            <label>&nbsp;</label>
+            <button id="savePrice" class="primary">Сохранить</button>
+            <span id="priceMsg" class="muted"></span>
+          </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
+  </main>
 
-  <!-- features -->
-  <section class="section container">
-    <div class="grid-3">
-      <div class="card feature">
-        <div class="ic">📈</div>
-        <div>
-          <h2>CPM: лента и статья</h2>
-          <p class="muted">Две независимые метрики + цена размещения для реального CPM.</p>
-        </div>
-      </div>
-      <div class="card feature">
-        <div class="ic">⚡️</div>
-        <div>
-          <h2>1 клик — и сбор пошёл</h2>
-          <p class="muted">Вставляешь ссылку вида <code>vc.ru/…/123456</code>, ID берём сами.</p>
-        </div>
-      </div>
-      <div class="card feature">
-        <div class="ic">🕒</div>
-        <div>
-          <h2>Автообновление</h2>
-          <p class="muted">Раз в сутки (и вручную когда угодно) без перегруза сервера.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <p class="footer">Неофициальный инструмент. UI вдохновлён VC.ru.</p>
-</main>
+  <div id="toast" class="toast hidden"></div>
+  <script src="/public/app.js"></script>
 </body>
 </html>
