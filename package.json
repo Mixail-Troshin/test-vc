@@ -2,14 +2,12 @@
   "name": "vc-metrics",
   "version": "1.0.0",
   "private": true,
-  "type": "commonjs",
-  "engines": { "node": ">=18" },
   "scripts": {
     "start": "node server.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
-    "cookie": "^0.6.0",
+    "cookie-session": "^2.0.0",
     "express": "^4.19.2"
   }
 }
