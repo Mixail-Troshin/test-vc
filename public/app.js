@@ -17,100 +17,117 @@ async function api(path, opts = {}) {
   return txt ? JSON.parse(txt) : {};
 }
 
-function showToast(msg){
-  const t = $("#toast"); t.textContent = msg;
-  t.classList.remove("hidden"); setTimeout(()=>t.classList.add("hidden"), 2200);
+function toast(msg){
+  const t = $("#toast"); t.textContent = msg; t.classList.remove("hidden");
+  setTimeout(()=>t.classList.add("hidden"), 2200);
 }
 
-// ---------------- Matrix (letters go UP) -----------------
-(function matrixUp(){
-  const canvas = $("#matrix");
-  const ctx = canvas.getContext("2d");
-  const glyphs = "01█▓░ ABCDEFGHIJKLMNOPQRSTUVWXYZ 0123456789 АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ".split("");
-  let W, H, cols, colY = [];
-
-  function resize(){
-    W = canvas.width = window.innerWidth;
-    H = canvas.height = window.innerHeight;
-    const fontSize = Math.max(14, Math.floor(W / 90));
-    ctx.font = `${fontSize}px ui-monospace, SFMono-Regular, Menlo, monospace`;
-    cols = Math.floor(W / (fontSize * 0.6));
-    colY = new Array(cols).fill(H + Math.random()*H); // начинаем снизу
-  }
-  window.addEventListener("resize", resize);
-  resize();
-
-  function tick(){
-    // прозрачная вуаль — создаёт шлейф
-    ctx.fillStyle = "rgba(10,12,16,0.1)";
-    ctx.fillRect(0,0,W,H);
-    for (let i=0; i<cols; i++){
-      const x = i * (ctx.measureText("M").width + 2);
-      const y = colY[i];
-      const ch = glyphs[(Math.random()*glyphs.length)|0];
-      ctx.fillStyle = `rgba(180,190,200,${0.55 + Math.random()*0.4})`;
-      ctx.fillText(ch, x, y);
-
-      // двигаем ВВЕРХ
-      colY[i] -= (8 + Math.random()*22);
-      // перезапуск снизу с разной задержкой
-      if (colY[i] < -50) colY[i] = H + Math.random()*H;
-    }
-    requestAnimationFrame(tick);
-  }
-  tick();
-})();
-
-// ---------------- Auth flow -----------------
-function showLogin(){
-  $("#login").classList.remove("hidden");
-  $("#app").classList.add("hidden");
-  $("#email").focus();
+/* Tabs */
+function setTab(name){
+  $$(".tab").forEach(b => b.classList.toggle("active", b.dataset.tab === name));
+  $("#tab-dashboard").classList.toggle("hidden", name !== "dashboard");
+  $("#tab-users").classList.toggle("hidden", name !== "users");
 }
-function showApp(){
-  $("#login").classList.add("hidden");
-  $("#app").classList.remove("hidden");
-  history.replaceState({}, "", "/app");
-}
+$$(".tab").forEach(b => b.onclick = () => setTab(b.dataset.tab));
 
+/* Auth guard */
 async function guard(){
   try {
-    await api("/api/me");
-    showApp();
+    const { user } = await api("/api/me");
+    $("#meEmail").textContent = user.email;
+    $("#tabUsers").style.display = user.isAdmin ? "inline-flex" : "none";
+    $("#login").classList.add("hidden");
+    $("#app").classList.remove("hidden");
+    if (user.isAdmin) await loadUsers();
   } catch {
-    showLogin();
+    $("#app").classList.add("hidden");
+    $("#login").classList.remove("hidden");
   }
 }
 
-// login submit (no page reload)
+/* Login form (no reload) */
 $("#loginForm").addEventListener("submit", async (e)=>{
   e.preventDefault();
   $("#loginErr").textContent = "";
   const email = $("#email").value.trim();
   const password = $("#password").value;
   if (!email || !password) { $("#loginErr").textContent = "Введите e-mail и пароль"; return; }
+
   const btn = $("#loginBtn");
   btn.disabled = true; btn.textContent = "Входим…";
-  try{
+  try {
     await api("/api/login", { method:"POST", body: JSON.stringify({ email, password }) });
-    showApp();
-  }catch(err){
-    $("#loginErr").textContent = err.message || "Ошибка входа";
-  }finally{
+    await guard();
+  } catch (err) {
+    $("#loginErr").textContent = err.message;
+  } finally {
     btn.disabled = false; btn.textContent = "Войти";
   }
 });
 
 $("#logout").onclick = async ()=>{
   await api("/api/logout", { method:"POST" });
-  showLogin();
+  $("#app").classList.add("hidden");
+  $("#login").classList.remove("hidden");
 };
 
-// demo private ping
-$("#ping").onclick = async ()=>{
-  try{ await api("/api/private/ping"); $("#pong").textContent = "ok"; }
-  catch{ $("#pong").textContent = "401"; }
-  setTimeout(()=> $("#pong").textContent = "", 1400);
+/* Admin: users */
+async function loadUsers(){
+  const { users } = await api("/api/users");
+  const tb = $("#usersTbl tbody"); tb.innerHTML = "";
+  for (const u of users) {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${u.id}</td>
+      <td>${u.email}</td>
+      <td>${u.isAdmin ? "admin" : "user"}</td>
+      <td>${new Date(u.createdAt).toLocaleString()}</td>
+      <td class="actions">
+        <button class="ghost" data-act="reset" data-id="${u.id}">Сбросить пароль</button>
+        <button class="ghost" data-act="delete" data-id="${u.id}">Удалить</button>
+      </td>`;
+    tb.appendChild(tr);
+  }
+}
+
+$("#usersTbl").onclick = async (e)=>{
+  const btn = e.target.closest("button"); if (!btn) return;
+  const id = btn.dataset.id;
+  if (btn.dataset.act === "reset") {
+    btn.disabled = true; btn.textContent = "…";
+    try {
+      const { tempPassword } = await api("/api/users/reset", {
+        method:"POST", body: JSON.stringify({ id })
+      });
+      toast("Пароль сброшен. Скопируйте ниже.");
+      $("#inviteOut").innerHTML = `Новый пароль для пользователя <b>ID ${id}</b>: <code>${tempPassword}</code>`;
+    } finally { btn.disabled = false; btn.textContent = "Сбросить пароль"; }
+  }
+  if (btn.dataset.act === "delete") {
+    if (!confirm("Удалить пользователя?")) return;
+    await api(`/api/users/${id}`, { method:"DELETE" });
+    await loadUsers(); toast("Удалён");
+  }
+};
+
+$("#inviteBtn").onclick = async ()=>{
+  const email = $("#invEmail").value.trim();
+  const isAdmin = $("#invAdmin").checked;
+  if (!email) { toast("Укажите e-mail"); return; }
+  const b = $("#inviteBtn"); b.disabled = true; b.textContent = "Создаю…";
+  try{
+    const { tempPassword, user } = await api("/api/users/invite", {
+      method:"POST", body: JSON.stringify({ email, isAdmin })
+    });
+    $("#inviteOut").innerHTML =
+      `Пользователь <b>${user.email}</b> создан. Временный пароль: <code>${tempPassword}</code>`;
+    $("#invEmail").value = ""; $("#invAdmin").checked = false;
+    await loadUsers();
+  }catch(err){
+    toast(err.message);
+  }finally{
+    b.disabled = false; b.textContent = "Создать и выдать пароль";
+  }
 };
 
 // boot
