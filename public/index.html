@@ -1,28 +1,24 @@
 <!doctype html>
 <html lang="ru">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>VC Metrics — вход</title>
-  <link rel="stylesheet" href="/styles.css" />
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>VC Metrics</title>
+  <link rel="stylesheet" href="/styles.css"/>
 </head>
 <body>
-  <!-- Публичная зона: экран входа -->
+
+  <!-- Вход -->
   <section id="login" class="screen login-screen">
     <div class="login-card glow">
-      <div class="brand">
-        <span class="logo">vc</span>
-        <span class="name">Metrics</span>
-      </div>
+      <div class="brand"><span class="logo">vc</span><span class="name">Metrics</span></div>
       <p class="sub">Внутренний сервис учёта PR-материалов</p>
 
       <form id="loginForm" autocomplete="on">
         <label>E-mail</label>
-        <input id="email" type="email" placeholder="admin@local" autocomplete="username" required />
-
+        <input id="email" type="email" placeholder="admin@local" autocomplete="username" required/>
         <label>Пароль</label>
-        <input id="password" type="password" placeholder="••••••••" autocomplete="current-password" required />
-
+        <input id="password" type="password" placeholder="••••••••" autocomplete="current-password" required/>
         <button id="loginBtn" type="submit" class="primary">Войти</button>
         <div id="loginErr" class="error"></div>
       </form>
@@ -34,11 +30,9 @@
   <!-- Закрытая зона -->
   <section id="app" class="screen app-screen hidden">
     <header class="topbar">
-      <div class="brand">
-        <span class="logo">vc</span><span class="name">Metrics</span>
-      </div>
+      <div class="brand"><span class="logo">vc</span><span class="name">Metrics</span></div>
       <nav class="tabs">
-        <button class="tab active" data-tab="dashboard">Главная</button>
+        <button class="tab active" data-tab="dashboard">Статистика</button>
         <button id="tabUsers" class="tab" data-tab="users" style="display:none">Пользователи</button>
       </nav>
       <div class="actions">
@@ -48,22 +42,68 @@
     </header>
 
     <main class="content">
+      <!-- Статистика -->
       <div id="tab-dashboard">
-        <h1>Личный кабинет</h1>
-        <p class="muted">Здесь будет аналитика. Доступно только после входа.</p>
+        <div class="card head"><h2>Админка статистики</h2></div>
+
+        <div class="card">
+          <h3>Добавить статью</h3>
+          <div class="row gap">
+            <input id="urlInput" type="text" placeholder="https://vc.ru/…/2317921-title"/>
+            <div class="row">
+              <span class="muted">Стоимость размещения (₽):</span>
+              <input id="price" type="number" min="0" step="1" style="width:140px"/>
+              <button id="savePrice" class="ghost">Сохранить цену</button>
+              <span id="priceMsg" class="muted"></span>
+            </div>
+            <button id="addBtn" class="primary">Добавить</button>
+          </div>
+          <div id="addMsg" class="hint"></div>
+        </div>
+
+        <div class="card">
+          <h3>Сводная статистика</h3>
+          <div class="grid3">
+            <div class="kpi"><div class="kpi-name">Публикаций</div><div id="kpi-count" class="kpi-val">0</div></div>
+            <div class="kpi"><div class="kpi-name">Всего открытий</div><div id="kpi-hits" class="kpi-val">0</div></div>
+            <div class="kpi"><div class="kpi-name">Бюджет (₽)</div><div id="kpi-budget" class="kpi-val">0</div></div>
+            <div class="kpi"><div class="kpi-name">Средний CPM лента (₽)</div><div id="kpi-cpm-hits" class="kpi-val">0</div></div>
+            <div class="kpi"><div class="kpi-name">Средний CPM статья (₽)</div><div id="kpi-cpm-views" class="kpi-val">0</div></div>
+            <div class="kpi"><div class="kpi-name">Обновить</div>
+              <button id="refreshAll" class="ghost">Обновить всё</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Список статей</h3>
+          <table class="tbl" id="table">
+            <thead>
+              <tr>
+                <th>Дата</th>
+                <th>Заголовок</th>
+                <th>Ссылка</th>
+                <th>Лента</th>
+                <th>Статья</th>
+                <th>CPM лента</th>
+                <th>CPM статья</th>
+                <th>Обновлено</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
       </div>
 
+      <!-- Пользователи -->
       <div id="tab-users" class="hidden">
         <h1>Управление пользователями</h1>
-
         <div class="card">
           <h3>Пригласить пользователя</h3>
           <div class="row">
-            <input id="invEmail" type="email" placeholder="email@company.com" />
-            <label class="check">
-              <input id="invAdmin" type="checkbox" />
-              <span>Администратор</span>
-            </label>
+            <input id="invEmail" type="email" placeholder="email@company.com"/>
+            <label class="check"><input id="invAdmin" type="checkbox"/><span>Администратор</span></label>
             <button id="inviteBtn" class="primary">Создать и выдать пароль</button>
           </div>
           <div id="inviteOut" class="hint"></div>
@@ -72,11 +112,7 @@
         <div class="card">
           <h3>Список пользователей</h3>
           <table class="tbl" id="usersTbl">
-            <thead>
-              <tr>
-                <th>ID</th><th>E-mail</th><th>Роль</th><th>Создан</th><th></th>
-              </tr>
-            </thead>
+            <thead><tr><th>ID</th><th>E-mail</th><th>Роль</th><th>Создан</th><th></th></tr></thead>
             <tbody></tbody>
           </table>
         </div>
