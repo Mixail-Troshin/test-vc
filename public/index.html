@@ -7,49 +7,81 @@
   <link rel="stylesheet" href="/styles.css" />
 </head>
 <body>
-  <!-- Matrix background -->
-  <canvas id="matrix"></canvas>
-
-  <!-- AUTH PANEL -->
-  <main id="login" class="auth-shell">
-    <form id="loginForm" class="card">
+  <!-- Публичная зона: экран входа -->
+  <section id="login" class="screen login-screen">
+    <div class="login-card glow">
       <div class="brand">
         <span class="logo">vc</span>
         <span class="name">Metrics</span>
       </div>
-      <p class="muted center">Аналитика статей</p>
+      <p class="sub">Внутренний сервис учёта PR-материалов</p>
 
-      <label>E-mail</label>
-      <input id="email" type="email" placeholder="admin@local" autocomplete="username" required />
+      <form id="loginForm" autocomplete="on">
+        <label>E-mail</label>
+        <input id="email" type="email" placeholder="admin@local" autocomplete="username" required />
 
-      <label>Пароль</label>
-      <input id="password" type="password" placeholder="••••••••" autocomplete="current-password" required />
+        <label>Пароль</label>
+        <input id="password" type="password" placeholder="••••••••" autocomplete="current-password" required />
 
-      <button id="loginBtn" type="submit" class="primary">Войти</button>
-      <div id="loginErr" class="error"></div>
-    </form>
-  </main>
+        <button id="loginBtn" type="submit" class="primary">Войти</button>
+        <div id="loginErr" class="error"></div>
+      </form>
 
-  <!-- PRIVATE APP (попадаем сюда после входа) -->
-  <section id="app" class="hidden app-wrap">
-    <header class="app-top">
+      <footer class="foot">Автор: <strong>Михаил Трошин</strong></footer>
+    </div>
+  </section>
+
+  <!-- Закрытая зона -->
+  <section id="app" class="screen app-screen hidden">
+    <header class="topbar">
       <div class="brand">
         <span class="logo">vc</span><span class="name">Metrics</span>
       </div>
-      <nav>
-        <button id="logout" class="ghost">Выйти</button>
+      <nav class="tabs">
+        <button class="tab active" data-tab="dashboard">Главная</button>
+        <button id="tabUsers" class="tab" data-tab="users" style="display:none">Пользователи</button>
       </nav>
+      <div class="actions">
+        <span id="meEmail" class="muted"></span>
+        <button id="logout" class="ghost">Выйти</button>
+      </div>
     </header>
 
-    <div class="app-body">
-      <h1>Личный кабинет</h1>
-      <p class="muted">Вы авторизованы. Здесь будет закрытая аналитика.</p>
-      <div class="card" style="margin-top:16px">
-        <code>GET /api/private/ping</code> — работает только в сессии.
-        <button id="ping" class="ghost" style="margin-left:12px">Проверить</button>
-        <span id="pong" class="muted"></span>
+    <main class="content">
+      <div id="tab-dashboard">
+        <h1>Личный кабинет</h1>
+        <p class="muted">Здесь будет аналитика. Доступно только после входа.</p>
       </div>
-    </div>
+
+      <div id="tab-users" class="hidden">
+        <h1>Управление пользователями</h1>
+
+        <div class="card">
+          <h3>Пригласить пользователя</h3>
+          <div class="row">
+            <input id="invEmail" type="email" placeholder="email@company.com" />
+            <label class="check">
+              <input id="invAdmin" type="checkbox" />
+              <span>Администратор</span>
+            </label>
+            <button id="inviteBtn" class="primary">Создать и выдать пароль</button>
+          </div>
+          <div id="inviteOut" class="hint"></div>
+        </div>
+
+        <div class="card">
+          <h3>Список пользователей</h3>
+          <table class="tbl" id="usersTbl">
+            <thead>
+              <tr>
+                <th>ID</th><th>E-mail</th><th>Роль</th><th>Создан</th><th></th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </main>
   </section>
 
   <div id="toast" class="toast hidden"></div>
