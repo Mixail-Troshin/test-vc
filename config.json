@@ -1,5 +1,4 @@
 {
-  "siteName": "VC Metrics",
-  "sessionSecret": "CHANGE_ME_TO_A_LONG_RANDOM_SECRET_32_CHARS_MIN",
-  "placementPrice": 0
+  "placementPrice": 0,
+  "lastAutoRefresh": 0
 }
